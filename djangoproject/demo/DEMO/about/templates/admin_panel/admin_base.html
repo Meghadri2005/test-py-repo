@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Panel{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/admin_base.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin</h2>
+                <p>Panel</p>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="{% url 'admin_dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+                    <span class="icon">📊</span>
+                    <span class="label">Dashboard</span>
+                </a>
+                <a href="{% url 'admin_product_list' %}" class="nav-item {% if request.resolver_match.url_name == 'admin_product_list' %}active{% endif %}">
+                    <span class="icon">📦</span>
+                    <span class="label">Products</span>
+                </a>
+                <a href="{% url 'manage_users' %}" class="nav-item {% if request.resolver_match.url_name == 'manage_users' %}active{% endif %}">
+                    <span class="icon">👥</span>
+                    <span class="label">Users</span>
+                </a>
+                <a href="{% url 'analytics' %}" class="nav-item {% if request.resolver_match.url_name == 'analytics' %}active{% endif %}">
+                    <span class="icon">📈</span>
+                    <span class="label">Analytics</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <p class="user-name">{{ request.user.username }}</p>
+                    <p class="user-role">Administrator</p>
+                </div>
+                <a href="{% url 'admin_logout' %}" class="btn-logout">Logout</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+                <p class="breadcrumb">{% block breadcrumb %}Home{% endblock %}</p>
+            </header>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        <span class="alert-close" onclick="this.parentElement.style.display='none';">&times;</span>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="admin-content">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <script src="{% static 'js/admin.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

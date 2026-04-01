@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Product Details{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
+
+<div class="product-detail-container">
+    <!-- Product Info Section -->
+    <div class="product-header">
+        <div class="product-image-section">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+            {% else %}
+                <div class="placeholder-image">No Image Available</div>
+            {% endif %}
+        </div>
+
+        <div class="product-info-section">
+            <h1 class="product-title">{{ product.name }}</h1>
+            
+            <!-- Rating Section -->
+            <div class="rating-section">
+                <div class="stars">
+                    {% for i in "12345" %}
+                        {% if average_rating >= i %}
+                            <span class="star filled">★</span>
+                        {% elif average_rating >= i|add:"-0.5" %}
+                            <span class="star half">★</span>
+                        {% else %}
+                            <span class="star empty">★</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <span class="rating-text">{{ average_rating|floatformat:1 }} ({{ review_count }} reviews)</span>
+            </div>
+
+            <!-- Price & Stock -->
+            <div class="product-meta">
+                <div class="price-box">
+                    <span class="price-label">Price</span>
+                    <span class="price-value">${{ product.price }}</span>
+                </div>
+                <div class="stock-box {% if product.stock > 0 %}in-stock{% else %}out-of-stock{% endif %}">
+                    <span class="stock-label">Stock</span>
+                    <span class="stock-value">
+                        {% if product.stock > 0 %}
+                            {{ product.stock }} available
+                        {% else %}
+                            Out of Stock
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="product-description">
+                <h3>Description</h3>
+                <p>{{ product.description }}</p>
+            </div>
+
+            <!-- Add to Cart Button -->
+            {% if product.stock > 0 %}
+                <button class="btn-add-to-cart">🛒 Add to Cart</button>
+            {% else %}
+                <button class="btn-add-to-cart" disabled>Out of Stock</button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="reviews-section">
+        <h2>📝 Customer Reviews</h2>
+
+        {% if user.is_authenticated %}
+            <!-- Review Form -->
+            <div class="review-form-container">
+                <h3>{{ user_review.title|default:"Write Your Review" }}</h3>
+                <form method="POST" class="review-form">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label>Rating *</label>
+                        <div class="rating-input">
+                            <input type="radio" name="rating" value="5" id="rating_5" {% if user_review.rating == 5 %}checked{% endif %} required>
+                            <label for="rating_5" class="rating-label">★★★★★</label>
+                            
+                            <input type="radio" name="rating" value="4" id="rating_4" {% if user_review.rating == 4 %}checked{% endif %}>
+                            <label for="rating_4" class="rating-label">★★★★☆</label>
+                            
+                            <input type="radio" name="rating" value="3" id="rating_3" {% if user_review.rating == 3 %}checked{% endif %}>
+                            <label for="rating_3" class="rating-label">★★★☆☆</label>
+                            
+                            <input type="radio" name="rating" value="2" id="rating_2" {% if user_review.rating == 2 %}checked{% endif %}>
+                            <label for="rating_2" class="rating-label">★★☆☆☆</label>
+                            
+                            <input type="radio" name="rating" value="1" id="rating_1" {% if user_review.rating == 1 %}checked{% endif %}>
+                            <label for="rating_1" class="rating-label">★☆☆☆☆</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title">Review Title *</label>
+                        <input type="text" name="title" id="title" maxlength="100" placeholder="Summarize your experience" value="{{ user_review.title|default:'' }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="comment">Your Review *</label>
+                        <textarea name="comment" id="comment" rows="5" maxlength="1000" placeholder="Share your detailed thoughts about this product..." required>{{ user_review.comment|default:'' }}</textarea>
+                        <small>Maximum 1000 characters</small>
+                    </div>
+
+                    <button type="submit" class="btn-submit">
+                        {% if user_review %}✎ Update Review{% else %}✚ Submit Review{% endif %}
+                    </button>
+                </form>
+            </div>
+        {% else %}
+            <div class="login-prompt">
+                <p>💬 <a href="{% url 'login' %}">Sign in</a> to share your review and help other customers!</p>
+            </div>
+        {% endif %}
+
+        <!-- Reviews List -->
+        <div class="reviews-list">
+            {% if reviews %}
+                {% for review in reviews %}
+                    <div class="review-item {% if review.user == user %}user-review{% endif %}">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <span class="reviewer-name">{{ review.user.first_name|default:review.user.username }}</span>
+                                <span class="review-date">{{ review.created_at|date:"M d, Y" }}</span>
+                                {% if review.user == user %}
+                                    <span class="badge-you">Your Review</span>
+                                {% endif %}
+                            </div>
+                            <div class="review-stars">
+                                {% for i in "12345" %}
+                                    {% if i|add:0 <= review.rating %}★{% else %}☆{% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <h4 class="review-title">{{ review.title }}</h4>
+                        <p class="review-comment">{{ review.comment }}</p>
+
+                        <div class="review-footer">
+                            <button class="btn-helpful">👍 Helpful ({{ review.helpful_count }})</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-reviews">
+                    <p>No reviews yet. Be the first to review!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    <div class="related-section">
+        <h2>You Might Also Like</h2>
+        <div class="related-products">
+            (Related products feature coming soon)</div>
+    </div>
+</div>
+
+<script>
+    // Set review stars dynamically
+    const ratingInputs = document.querySelectorAll('input[name="rating"]');
+    const ratingLabels = document.querySelectorAll('.rating-input .rating-label');
+    
+    ratingLabels.forEach((label, index) => {
+        label.addEventListener('click', () => {
+            ratingInputs[index].checked = true;
+        });
+    });
+</script>
+{% endblock %}

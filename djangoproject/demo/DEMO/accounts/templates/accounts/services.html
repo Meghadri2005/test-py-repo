@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Our Services{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/pages.css' %}">
+
+<!-- Page Header -->
+<div class="page-header">
+    <h1 class="page-title cascade-text">Our Services</h1>
+    <p class="page-subtitle">Comprehensive solutions tailored to your needs</p>
+</div>
+
+<!-- Services Grid -->
+<section class="services-container">
+    <div class="container">
+        <div class="services-grid">
+            <!-- Service 1 -->
+            <div class="service-card cascade-card">
+                <div class="service-icon">📦</div>
+                <h3>Product Delivery</h3>
+                <p>Fast and reliable shipping to your doorstep with real-time tracking and multiple delivery options.</p>
+                <ul class="service-features">
+                    <li>✓ Same-day delivery available</li>
+                    <li>✓ Free shipping on orders over $50</li>
+                    <li>✓ Real-time tracking</li>
+                </ul>
+            </div>
+
+            <!-- Service 2 -->
+            <div class="service-card cascade-card">
+                <div class="service-icon">🔄</div>
+                <h3>Easy Returns</h3>
+                <p>Hassle-free return process with full refund or exchange within 30 days of purchase.</p>
+                <ul class="service-features">
+                    <li>✓ 30-day return window</li>
+                    <li>✓ Free return shipping</li>
+                    <li>✓ Full refund guarantee</li>
+                </ul>
+            </div>
+
+            <!-- Service 3 -->
+            <div class="service-card cascade-card">
+                <div class="service-icon">💳</div>
+                <h3>Secure Payment</h3>
+                <p>Multiple secure payment options including credit cards, digital wallets, and more.</p>
+                <ul class="service-features">
+                    <li>✓ SSL encrypted transactions</li>
+                    <li>✓ Multiple payment methods</li>
+                    <li>✓ Fraud protection</li>
+                </ul>
+            </div>
+
+            <!-- Service 4 -->
+            <div class="service-card cascade-card">
+                <div class="service-icon">🎁</div>
+                <h3>Gift Wrapping</h3>
+                <p>Beautiful gift wrapping options available for all occasions and celebrations.</p>
+                <ul class="service-features">
+                    <li>✓ Custom gift messages</li>
+                    <li>✓ Premium gift wrapping</li>
+                    <li>✓ Direct shipping to recipient</li>
+                </ul>
+            </div>
+
+            <!-- Service 5 -->
+            <div class="service-card cascade-card">
+                <div class="service-icon">👥</div>
+                <h3>Customer Support</h3>
+                <p>Our dedicated support team is available 24/7 to assist you with any questions.</p>
+                <ul class="service-features">
+                    <li>✓ Live chat support</li>
+                    <li>✓ Email support</li>
+                    <li>✓ Phone support</li>
+                </ul>
+            </div>
+
+            <!-- Service 6 -->
+            <div class="service-card cascade-card">
+                <div class="service-icon">💎</div>
+                <h3>Loyalty Program</h3>
+                <p>Earn rewards points on every purchase and redeem them for exclusive discounts.</p>
+                <ul class="service-features">
+                    <li>✓ Earn 1 point per $1 spent</li>
+                    <li>✓ Exclusive member deals</li>
+                    <li>✓ Birthday rewards</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content cascade-fade">
+            <h2>Ready to Experience Our Services?</h2>
+            <p>Start shopping and enjoy our premium services today</p>
+            <a href="{% url 'product_list' %}" class="btn btn-primary btn-large">Shop Now</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

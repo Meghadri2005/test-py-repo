@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - {{ site_name }}</title>
+    <link rel="stylesheet" href="{% static 'css/admin_login.css' %}">
+</head>
+<body>
+    <div class="admin-login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h1>Admin Panel</h1>
+                <p class="subtitle">Secure Login Required</p>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" class="login-form">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required placeholder="Enter your username" autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Enter your password">
+                </div>
+
+                <button type="submit" class="btn-login">Sign In</button>
+            </form>
+
+            <div class="login-footer">
+                <p>Need help? <a href="/">Back to Home</a></p>
+            </div>
+        </div>
+
+        <div class="login-info">
+            <div class="info-card">
+                <h3>🔒 Secure Access</h3>
+                <p>Only authorized administrators can access this panel</p>
+            </div>
+            <div class="info-card">
+                <h3>📊 Analytics</h3>
+                <p>View detailed statistics and insights</p>
+            </div>
+            <div class="info-card">
+                <h3>⚙️ Management</h3>
+                <p>Manage products, users, and more</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

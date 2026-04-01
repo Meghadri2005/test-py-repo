@@ -1,0 +1,110 @@
+{% extends 'admin_panel/admin_base.html' %}
+{% load static %}
+
+{% block title %}Manage Users{% endblock %}
+{% block page_title %}User Management{% endblock %}
+{% block breadcrumb %}<a href="{% url 'admin_dashboard' %}">Dashboard</a> > Users{% endblock %}
+
+{% block content %}
+    <div class="users-container">
+        <!-- Statistics -->
+        <div class="card-row">
+            <div class="stat-card primary">
+                <div class="stat-icon">👥</div>
+                <div class="stat-content">
+                    <h3>Total Users</h3>
+                    <p class="stat-number">{{ total_users }}</p>
+                </div>
+            </div>
+
+            <div class="stat-card success">
+                <div class="stat-icon">✅</div>
+                <div class="stat-content">
+                    <h3>Active Users</h3>
+                    <p class="stat-number">{{ active_users }}</p>
+                </div>
+            </div>
+
+            <div class="stat-card warning">
+                <div class="stat-icon">🔑</div>
+                <div class="stat-content">
+                    <h3>Admin Users</h3>
+                    <p class="stat-number">{{ admin_users }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="dashboard-card full-width">
+            <div class="card-header">
+                <h2>👥 All Users</h2>
+            </div>
+
+            <div class="users-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Role</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td><strong>{{ user.username }}</strong></td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.first_name }} {{ user.last_name }}</td>
+                                <td>
+                                    {% if user.is_active %}
+                                        <span class="badge badge-success">Active</span>
+                                    {% else %}
+                                        <span class="badge badge-danger">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if user.is_superuser %}
+                                        <span class="badge badge-primary">Superuser</span>
+                                    {% elif user.is_staff %}
+                                        <span class="badge badge-info">Admin</span>
+                                    {% else %}
+                                        <span class="badge badge-secondary">User</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ user.date_joined|date:"M d, Y" }}</td>
+                                <td>
+                                    <div class="action-dropdown">
+                                        <form method="POST" style="display:inline;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                                            
+                                            {% if not user.is_staff %}
+                                                <button type="submit" name="action" value="make_admin" class="btn btn-small btn-info" onclick="return confirm('Make {{ user.username }} an admin?')">Make Admin</button>
+                                            {% else %}
+                                                <button type="submit" name="action" value="remove_admin" class="btn btn-small btn-warning" onclick="return confirm('Remove {{ user.username }} from admin?')">Remove Admin</button>
+                                            {% endif %}
+
+                                            {% if user.is_active %}
+                                                <button type="submit" name="action" value="deactivate" class="btn btn-small btn-warning" onclick="return confirm('Deactivate {{ user.username }}?')">Deactivate</button>
+                                            {% else %}
+                                                <button type="submit" name="action" value="activate" class="btn btn-small btn-success" onclick="return confirm('Activate {{ user.username }}?')">Activate</button>
+                                            {% endif %}
+                                            
+                                            {% if user.username != request.user.username %}
+                                                <button type="submit" name="action" value="delete" class="btn btn-small btn-danger" onclick="return confirm('Are you sure you want to delete {{ user.username }}? This cannot be undone!')">Delete</button>
+                                            {% endif %}
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

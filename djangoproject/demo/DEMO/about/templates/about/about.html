@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
+
+<div class="about-page">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>About Us</h1>
+            <p>Building modern, clean, and efficient web solutions</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="about-container">
+        <!-- Who We Are -->
+        <section class="section">
+            <div class="section-content">
+                <h2>Who We Are</h2>
+                <p>We are a dedicated team of developers passionate about creating high-quality, user-friendly web applications. Our focus is on building clean, efficient, and scalable solutions using modern technologies.</p>
+            </div>
+        </section>
+
+        <!-- Mission & Vision -->
+        <section class="section section-grid">
+            <div class="grid-item">
+                <div class="icon">🎯</div>
+                <h3>Our Mission</h3>
+                <p>To deliver exceptional digital experiences that empower businesses and users alike, leveraging modern web technologies and best practices.</p>
+            </div>
+            <div class="grid-item">
+                <div class="icon">🚀</div>
+                <h3>Our Vision</h3>
+                <p>To be a trusted partner in digital transformation, creating innovative solutions that drive growth and success in the digital world.</p>
+            </div>
+            <div class="grid-item">
+                <div class="icon">💡</div>
+                <h3>Our Values</h3>
+                <p>Quality, innovation, integrity, and continuous learning guide everything we do. We believe in transparent communication and customer success.</p>
+            </div>
+        </section>
+
+        <!-- What We Offer -->
+        <section class="section">
+            <h2>What We Offer</h2>
+            <div class="offerings">
+                <div class="offering-item">
+                    <span class="offering-icon">📦</span>
+                    <h4>E-Commerce Solutions</h4>
+                    <p>Complete product management and online store capabilities</p>
+                </div>
+                <div class="offering-item">
+                    <span class="offering-icon">🔐</span>
+                    <h4>Secure Authentication</h4>
+                    <p>Robust user management and role-based access control</p>
+                </div>
+                <div class="offering-item">
+                    <span class="offering-icon">📊</span>
+                    <h4>Analytics & Reports</h4>
+                    <p>Detailed insights and comprehensive business analytics</p>
+                </div>
+                <div class="offering-item">
+                    <span class="offering-icon">⚙️</span>
+                    <h4>Admin Panel</h4>
+                    <p>Intuitive management interface for all operations</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technology Stack -->
+        <section class="section">
+            <h2>Technology Stack</h2>
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <strong>Backend</strong>
+                    <p>Django 6.0.3</p>
+                </div>
+                <div class="tech-item">
+                    <strong>Language</strong>
+                    <p>Python 3.13</p>
+                </div>
+                <div class="tech-item">
+                    <strong>Database</strong>
+                    <p>SQLite3</p>
+                </div>
+                <div class="tech-item">
+                    <strong>Frontend</strong>
+                    <p>HTML5 & CSS3</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact CTA -->
+        <section class="section contact-section">
+            <h2>Ready to Work Together?</h2>
+            <p>Have a project in mind or want to learn more about our services?</p>
+            <a href="{% url 'contact' %}" class="btn-primary">Get In Touch</a>
+        </section>
+    </div>
+</div>
+{% endblock %}

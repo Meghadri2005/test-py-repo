@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Welcome - Best Online Store{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/welcome.css' %}">
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-background">
+        <div class="hero-animation"></div>
+    </div>
+    <div class="hero-content">
+        <div class="hero-text-container">
+            <h1 class="hero-title cascade-text">Welcome to Our Store</h1>
+            <p class="hero-subtitle cascade-fade">Discover Amazing Products at Best Prices</p>
+            <div class="hero-buttons">
+                <a href="{% url 'product_list' %}" class="btn btn-primary btn-large cascade-button" style="animation-delay: 0.3s;">
+                    Shop Now
+                </a>
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'login' %}" class="btn btn-secondary btn-large cascade-button" style="animation-delay: 0.4s;">
+                        Sign In
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="floating-card">🛍️</div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title">Why Choose Us</h2>
+        <div class="features-grid">
+            <div class="feature-item cascade-card">
+                <div class="feature-icon">🚚</div>
+                <h3>Fast Shipping</h3>
+                <p>Get your products delivered quickly and safely to your doorstep</p>
+            </div>
+            <div class="feature-item cascade-card">
+                <div class="feature-icon">💰</div>
+                <h3>Best Prices</h3>
+                <p>Competitive pricing on all our premium quality products</p>
+            </div>
+            <div class="feature-item cascade-card">
+                <div class="feature-icon">🔄</div>
+                <h3>Easy Returns</h3>
+                <p>Hassle-free returns within 30 days of purchase</p>
+            </div>
+            <div class="feature-item cascade-card">
+                <div class="feature-icon">🛡️</div>
+                <h3>Secure Payment</h3>
+                <p>Your payment information is safe and secure with us</p>
+            </div>
+            <div class="feature-item cascade-card">
+                <div class="feature-icon">📱</div>
+                <h3>24/7 Support</h3>
+                <p>Our customer support team is always ready to help</p>
+            </div>
+            <div class="feature-item cascade-card">
+                <div class="feature-icon">⭐</div>
+                <h3>Quality Assured</h3>
+                <p>All products are carefully selected for quality</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="featured-products-section">
+    <div class="container">
+        <h2 class="section-title">Featured Products</h2>
+        {% if featured_products %}
+            <div class="products-showcase">
+                {% for product in featured_products %}
+                    <div class="product-showcase-card cascade-card">
+                        <div class="product-showcase-image">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                            {% else %}
+                                <div class="no-image">📷</div>
+                            {% endif %}
+                        </div>
+                        <div class="product-showcase-info">
+                            <h4>{{ product.name }}</h4>
+                            <p class="product-price">${{ product.price }}</p>
+                            <a href="{% url 'product_list' %}" class="btn btn-sm btn-primary">View Details</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content cascade-fade">
+            <h2>Ready to Start Shopping?</h2>
+            <p>Browse our extensive collection of high-quality products</p>
+            <a href="{% url 'product_list' %}" class="btn btn-primary btn-large">Explore Now</a>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section">
+    <div class="container">
+        <h2 class="section-title">What Our Customers Say</h2>
+        <div class="testimonials-grid">
+            <div class="testimonial-card cascade-card">
+                <div class="stars">⭐⭐⭐⭐⭐</div>
+                <p class="testimonial-text">"Amazing products and fast delivery! Highly recommended!"</p>
+                <p class="testimonial-author">- John Doe</p>
+            </div>
+            <div class="testimonial-card cascade-card">
+                <div class="stars">⭐⭐⭐⭐⭐</div>
+                <p class="testimonial-text">"Great quality and excellent customer service. Will definitely buy again!"</p>
+                <p class="testimonial-author">- Sarah Smith</p>
+            </div>
+            <div class="testimonial-card cascade-card">
+                <div class="stars">⭐⭐⭐⭐⭐</div>
+                <p class="testimonial-text">"Best prices I found online. Super happy with my purchase!"</p>
+                <p class="testimonial-author">- Mike Johnson</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

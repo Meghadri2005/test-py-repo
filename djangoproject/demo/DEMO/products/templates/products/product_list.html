@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Our Products{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/products.css' %}">
+
+<section class="products-hero">
+    <div class="hero-content">
+        <h1>🛍️ Our Products</h1>
+        <p>Discover our amazing collection of products</p>
+        {% if user.is_staff or user.is_superuser %}
+            <a href="{% url 'admin_product_list' %}" class="btn btn-secondary">
+                ⚙️ Manage Products
+            </a>
+        {% endif %}
+    </div>
+</section>
+
+<section class="products-section">
+    <div class="container">
+        {% if page_obj %}
+            <div class="products-grid">
+                {% for product in page_obj %}
+                <a href="{% url 'product_detail' product.id %}" class="product-card-link">
+                    <div class="product-card">
+                        <div class="product-image">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                            {% else %}
+                                <div class="no-image">📷<br>No Image</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="product-info">
+                            <h3 class="product-title">{{ product.name }}</h3>
+                            <p class="product-description">{{ product.description|truncatechars:100 }}</p>
+
+                            <div class="product-rating">
+                                <div class="stars">
+                                    {% for i in "12345" %}
+                                        {% if product.average_rating >= i %}
+                                            <span class="star filled">★</span>
+                                        {% elif product.average_rating >= i|add:"-0.5" %}
+                                            <span class="star half">★</span>
+                                        {% else %}
+                                            <span class="star empty">★</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <span class="review-count">({{ product.review_count }} reviews)</span>
+                            </div>
+
+                            <div class="product-details">
+                                <div class="price">${{ product.price }}</div>
+                                <div class="stock">
+                                    {% if product.stock > 10 %}
+                                        <span class="stock-good">✓ In Stock ({{ product.stock }})</span>
+                                    {% elif product.stock > 0 %}
+                                        <span class="stock-low">⚠️ Low Stock ({{ product.stock }})</span>
+                                    {% else %}
+                                        <span class="stock-out">❌ Out of Stock</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="product-actions">
+                                {% if product.stock > 0 %}
+                                    <button class="btn btn-primary" disabled>View Details</button>
+                                {% else %}
+                                    <button class="btn btn-secondary" disabled>Out of Stock</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1" class="page-link">« First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}" class="page-link">Previous</a>
+                {% endif %}
+
+                <span class="page-info">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}" class="page-link">Last »</a>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h3>No products available</h3>
+                <p>We're working on adding new products. Check back soon!</p>
+                {% if user.is_staff or user.is_superuser %}
+                    <a href="{% url 'product_create' %}" class="btn btn-primary">Add First Product</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}
