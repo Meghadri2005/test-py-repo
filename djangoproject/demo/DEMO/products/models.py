@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Product(models.Model):
@@ -29,6 +30,42 @@ class Product(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+
+class WishlistItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist_items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='wishlisted_by')
+    added_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ('user', 'product')
+        ordering = ['-added_at']
+
+    def __str__(self):
+        return f"WishlistItem: {self.user.username} - {self.product.name}"
+
+
+class ProductTracking(models.Model):
+    STATUS_CHOICES = [
+        ('ordered', 'Ordered'),
+        ('processed', 'Processed'),
+        ('shipped', 'Shipped'),
+        ('out_for_delivery', 'Out for Delivery'),
+        ('delivered', 'Delivered'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='trackings')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='trackings')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='ordered')
+    last_update = models.DateTimeField(auto_now=True)
+    tracking_notes = models.TextField(blank=True, null=True)
+
+    class Meta:
+        unique_together = ('user', 'product')
+        ordering = ['-last_update']
+
+    def __str__(self):
+        return f"Tracking {self.product.name} for {self.user.username}: {self.get_status_display()}"
 
 
 class Review(models.Model):

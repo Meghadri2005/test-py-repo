@@ -5,6 +5,8 @@ urlpatterns = [
     # Public product views
     path('', views.product_list, name='product_list'),
     path('<int:pk>/', views.product_detail, name='product_detail'),
+    path('<int:pk>/wishlist-toggle/', views.wishlist_toggle, name='wishlist_toggle'),
+    path('wishlist/', views.wishlist, name='wishlist'),
 
     # Admin product management views
     path('admin/', views.admin_product_list, name='admin_product_list'),

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Easy Return Policy{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/pages.css' %}">
+
+<section class="service-details">
+    <div class="container">
+        <h1>Easy Return Policy</h1>
+        <p>We believe in total satisfaction. If your purchase isn’t right, you can return it quickly and easily using the policy below.</p>
+
+        <h2>30-Day Return Guarantee</h2>
+        <ul>
+            <li>Return any product within 30 days of delivery.</li>
+            <li>Items must be in original condition and packaging.</li>
+            <li>Included accessories and tags should be present.</li>
+        </ul>
+
+        <h2>How to Initiate a Return</h2>
+        <ol>
+            <li>Visit your <a href="{% url 'profile' %}">Profile</a> or <a href="{% url 'contact' %}">Contact Us</a>.</li>
+            <li>Select the order/product and click <strong>Return Item</strong> (coming soon).</li>
+            <li>Ship back to our return center via prepaid label.</li>
+            <li>Receive refund within 7 business days after item inspection.</li>
+        </ol>
+
+        <h2>Refund & Exchange</h2>
+        <p>Refunds are issued to original payment method. You can also choose store credit for faster processing when available.</p>
+
+        <h2>Need Help?</h2>
+        <p>If you have questions, contact customer support via <a href="{% url 'contact' %}">Contact</a>.</p>
+
+        <p><strong>Note:</strong> Some products may have special return conditions listed on the product page.</p>
+
+        <a href="{% url 'services' %}" class="btn btn-secondary">Back to Services</a>
+    </div>
+</section>
+
+{% endblock %}

@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
-from .models import Product, Review
+from .models import Product, Review, WishlistItem, ProductTracking
 from .forms import ProductForm
 
 def is_admin(user):
@@ -16,10 +16,36 @@ def product_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    wishlist_product_ids = []
+    if request.user.is_authenticated:
+        wishlist_product_ids = WishlistItem.objects.filter(user=request.user).values_list('product_id', flat=True)
+
     return render(request, 'products/product_list.html', {
         'page_obj': page_obj,
-        'is_admin_view': False
+        'is_admin_view': False,
+        'wishlist_product_ids': wishlist_product_ids,
     })
+
+@login_required
+def wishlist(request):
+    items = WishlistItem.objects.filter(user=request.user).select_related('product')
+    return render(request, 'products/wishlist.html', {
+        'items': items
+    })
+
+@login_required
+def wishlist_toggle(request, pk):
+    product = get_object_or_404(Product, pk=pk, is_active=True)
+
+    wishlist_item = WishlistItem.objects.filter(user=request.user, product=product).first()
+    if wishlist_item:
+        wishlist_item.delete()
+        messages.success(request, f'"{product.name}" removed from your wishlist.')
+    else:
+        WishlistItem.objects.create(user=request.user, product=product)
+        messages.success(request, f'"{product.name}" added to your wishlist.')
+
+    return redirect(request.META.get('HTTP_REFERER', 'product_detail'))
 
 def product_detail(request, pk):
     """Detailed view of a single product with reviews"""
@@ -29,26 +55,40 @@ def product_detail(request, pk):
     except Product.DoesNotExist:
         from django.http import Http404
         raise Http404("Product not found")
-    
-    # If product is inactive and user is not admin, return 404
+
     if not product.is_active and not (request.user.is_staff or request.user.is_superuser):
         from django.http import Http404
         raise Http404("Product not found")
-    
+
     reviews = product.reviews.all()
     user_review = None
-    
+    tracking = None
+
     if request.user.is_authenticated:
         user_review = product.reviews.filter(user=request.user).first()
-    
-    # Handle review submission
+        is_in_wishlist = WishlistItem.objects.filter(user=request.user, product=product).exists()
+        tracking, _ = ProductTracking.objects.get_or_create(user=request.user, product=product)
+    else:
+        is_in_wishlist = False
+
     if request.method == 'POST' and request.user.is_authenticated:
+        if 'track-action' in request.POST:
+            new_status = request.POST.get('status')
+            note = request.POST.get('tracking_note', '')
+            if new_status in dict(ProductTracking.STATUS_CHOICES):
+                tracking.status = new_status
+                tracking.tracking_notes = note
+                tracking.save()
+                messages.success(request, f'Tracking status updated to {tracking.get_status_display()}.')
+            else:
+                messages.error(request, 'Invalid tracking status.')
+            return redirect('product_detail', pk=product.pk)
+
         rating = request.POST.get('rating')
         title = request.POST.get('title')
         comment = request.POST.get('comment')
-        
+
         if rating and title and comment:
-            # Update existing review or create new
             review, created = Review.objects.update_or_create(
                 product=product,
                 user=request.user,
@@ -63,16 +103,19 @@ def product_detail(request, pk):
             return redirect('product_detail', pk=product.pk)
         else:
             messages.error(request, 'Please fill in all fields.')
-    
+
     context = {
         'product': product,
         'reviews': reviews,
         'user_review': user_review,
         'average_rating': product.average_rating(),
         'review_count': product.review_count(),
+        'is_in_wishlist': is_in_wishlist,
+        'tracking': tracking,
     }
-    
+
     return render(request, 'products/product_detail.html', context)
+
 
 @user_passes_test(is_admin)
 def admin_product_list(request):
