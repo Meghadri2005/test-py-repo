@@ -65,11 +65,14 @@
     <div class="container">
         <h2>Ready to Get Started?</h2>
         <p>Join thousands of users who trust our platform.</p>
-        {% if not user.is_authenticated %}
-            <a href="{% url 'login' %}" class="btn btn-primary btn-large">Get Started</a>
-        {% else %}
-            <a href="/about/" class="btn btn-primary btn-large">Explore More</a>
-        {% endif %}
+        <div class="cta-buttons">
+            <a href="{% url 'product_list' %}" class="btn btn-secondary btn-large">Shop Now</a>
+            {% if not user.is_authenticated %}
+                <a href="{% url 'login' %}" class="btn btn-primary btn-large">Login</a>
+            {% else %}
+                <a href="{% url 'profile' %}" class="btn btn-primary btn-large">Profile</a>
+            {% endif %}
+        </div>
     </div>
 </section>
 
